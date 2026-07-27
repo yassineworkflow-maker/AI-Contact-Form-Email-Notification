@@ -6,7 +6,7 @@ This project is an n8n workflow that automates contact form submissions.
 
 ## Workflow Preview
 
-![Workflow](images/workflow.png)
+![Workflow Overview](images/workflow-overview.png)
 
 When a user submits the form:
 
