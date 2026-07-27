@@ -1,0 +1,249 @@
+{
+  "name": "AI Contact Form - Email Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "contact-form",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "59e615cf-dc7c-4b0e-8285-46d94c064b1e",
+      "name": "Webhook",
+      "webhookId": "38b3c74c-1f64-45ac-b612-47083f3c31b6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "108cea36-b20c-41b1-9551-386c9f203518",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "4af17564-f0b3-447a-a7d1-91c29e15e495",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "3d3a34a0-f0cb-4230-bb18-4a63b0196ef3",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "f4bc473f-f9a8-44e1-932d-7c4e40791e4b",
+              "name": "submittedAt",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        -96
+      ],
+      "id": "978ccebe-786a-4a2c-8a2a-f94db8cc7e8e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1_TaP0BdsubqdATGNFxgMiplZnuMHcg34Ks0J3933J2I",
+          "mode": "list",
+          "cachedResultName": "AI Contact Form",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_TaP0BdsubqdATGNFxgMiplZnuMHcg34Ks0J3933J2I/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Submissions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_TaP0BdsubqdATGNFxgMiplZnuMHcg34Ks0J3933J2I/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Message": "={{ $json.message }}",
+            "SubmittedAt": "={{ $json.submittedAt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SubmittedAt",
+              "displayName": "SubmittedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        288,
+        96
+      ],
+      "id": "6939216e-93e6-4f2f-8ade-2d75b7b88c9e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Kb7x03g3fXfUQBv1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "yassine.workflow@gmail.com",
+        "subject": "New Contact Form Submission",
+        "message": "=New Contact Form Submission  Name: {{ $json.Name }}  Email: {{ $json.Email }}  Message: {{ $json.Message }}  Submitted At: {{ $json.SubmittedAt }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "f0b91b3d-ca3d-4efd-bb9d-33bd65f2b3e3",
+      "name": "Send a message",
+      "webhookId": "7898418b-a1aa-4cc5-bf43-3b6d5b5f398f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rFmBjUrsLAVu67YZ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Thank you! Your message has been received.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "af619c29-7168-4189-b621-89d3f9b3752c",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c3ac3a3e-6544-4576-9c27-0177c0fdfb6b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7368bf60869be592ce4c3b0da8c989cdd2dfa163501f0d833d65bb7c3a877976"
+  },
+  "nodeGroups": [],
+  "id": "qD54Gliv7qWvr7ex",
+  "tags": []
+}
